@@ -1,0 +1,462 @@
+<mxfile host="app.diagrams.net" compressed="false" type="device" version="24.0.0">
+  <diagram id="agent-skill-generator-workflow" name="Agent &amp; Command Generator for Claude Code CLI">
+    <mxGraphModel dx="4200" dy="2400" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="5600" pageHeight="3100" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+
+        <!-- ============================================================ -->
+        <!-- POOL: Agent & Skill Generator for Claude Code CLI            -->
+        <!-- ============================================================ -->
+        <mxCell id="pool1" value="Agent &amp; Command Generator for Claude Code CLI" style="shape=mxgraph.bpmn.pool;startSize=30;fillColor=#dae8fc;strokeColor=#6c8ebf;horizontal=1;childLayout=stackLayout;horizontalStack=0;resizeParent=1;resizeParentMax=0;collapsible=0;marginBottom=0;swimlaneHead=0;fontStyle=1;fontSize=14;" vertex="1" parent="1">
+          <mxGeometry x="20" y="20" width="5400" height="2700" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================ -->
+        <!-- LANE 1: User                                                 -->
+        <!-- ============================================================ -->
+        <mxCell id="lane_user" value="User" style="shape=mxgraph.bpmn.lane;startSize=40;fillColor=#e1d5e7;strokeColor=#9673a6;horizontal=1;swimlaneHead=0;fontStyle=1;fontSize=11;" vertex="1" parent="pool1">
+          <mxGeometry y="30" width="5400" height="400" as="geometry" />
+        </mxCell>
+
+        <!-- START EVENT -->
+        <mxCell id="evt_start" value="" style="shape=mxgraph.bpmn.event;perimeter=ellipsePerimeter;symbol=general;isLooping=0;isInterrupting=1;isConditional=0;outline=standard;fillColor=#d5e8d4;strokeColor=#82b366;strokeWidth=2;" vertex="1" parent="lane_user">
+          <mxGeometry x="60" y="160" width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_start" value="Generation&#xa;Request" style="text;html=0;align=center;verticalAlign=top;whiteSpace=wrap;fontSize=10;" vertex="1" parent="lane_user">
+          <mxGeometry x="40" y="205" width="80" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- PHASE 1 LABEL -->
+        <mxCell id="phase1_label" value="PHASE 1: Input &amp; Classification" style="text;html=0;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=12;fontStyle=5;fontColor=#9673a6;" vertex="1" parent="lane_user">
+          <mxGeometry x="160" y="40" width="280" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Task: Receive Generation Request -->
+        <object label="Receive Generation&#xa;Request" agent="user" phase="1" phase_name="Input &amp; Classification" mandatory="true" status_from="new" status_to="received" rule="User specifies: agent or skill, role name, domain, expertise areas, target model, required MCP tools" id="task_receive_request">
+          <mxCell style="shape=mxgraph.bpmn.task;taskMarker=receive;isLooping=0;isAdHoc=0;isCompensation=0;isCollapsed=0;instantiate=0;bpmnShapeType=task;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;fontSize=11;whiteSpace=wrap;" vertex="1" parent="lane_user">
+            <mxGeometry x="160" y="150" width="180" height="60" as="geometry" />
+          </mxCell>
+        </object>
+
+        <!-- Flow: Start -> Receive Request -->
+        <mxCell id="flow_start_receive" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" source="evt_start" target="task_receive_request" parent="lane_user">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================ -->
+        <!-- LANE 2: Orchestrator                                         -->
+        <!-- ============================================================ -->
+        <mxCell id="lane_orchestrator" value="Orchestrator" style="shape=mxgraph.bpmn.lane;startSize=40;fillColor=#dae8fc;strokeColor=#6c8ebf;horizontal=1;swimlaneHead=0;fontStyle=1;fontSize=11;" vertex="1" parent="pool1">
+          <mxGeometry y="430" width="5400" height="600" as="geometry" />
+        </mxCell>
+
+        <!-- Gateway: Agent or Skill? -->
+        <mxCell id="gw_agent_or_skill" value="Agent or&#xa;Command?" style="shape=mxgraph.bpmn.shape;perimeter=mxPerimeter.rhombusPerimeter;symbol=exclusiveGw;gwType=exclusive;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=10;" vertex="1" parent="lane_orchestrator">
+          <mxGeometry x="230" y="100" width="50" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- PHASE 2 LABEL -->
+        <mxCell id="phase2_label" value="PHASE 2: Research &amp; Analysis" style="text;html=0;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=12;fontStyle=5;fontColor=#6c8ebf;" vertex="1" parent="lane_orchestrator">
+          <mxGeometry x="500" y="40" width="260" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Task: Analyze Existing Agents/Skills -->
+        <object label="Analyze Existing&#xa;Agents/Skills" agent="agent_generator_orchestrator" phase="2" phase_name="Research &amp; Analysis" mandatory="true" status_from="received" status_to="analyzing" rule="Check ~/.claude/agents/ or ~/.claude/commands/ for similar existing files to avoid duplication and maintain consistency" id="task_analyze_existing">
+          <mxCell style="shape=mxgraph.bpmn.task;taskMarker=service;isLooping=0;isAdHoc=0;isCompensation=0;isCollapsed=0;instantiate=0;bpmnShapeType=task;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=11;whiteSpace=wrap;" vertex="1" parent="lane_orchestrator">
+            <mxGeometry x="500" y="80" width="180" height="60" as="geometry" />
+          </mxCell>
+        </object>
+
+        <!-- Task: Research Domain Expertise -->
+        <object label="Research Domain&#xa;Expertise" agent="agent_generator_orchestrator" phase="2" phase_name="Research &amp; Analysis" mandatory="true" status_from="analyzing" status_to="researched" rule="Gather domain knowledge, identify key competencies, determine appropriate experience level" id="task_research_domain">
+          <mxCell style="shape=mxgraph.bpmn.task;taskMarker=script;isLooping=0;isAdHoc=0;isCompensation=0;isCollapsed=0;instantiate=0;bpmnShapeType=task;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=11;whiteSpace=wrap;" vertex="1" parent="lane_orchestrator">
+            <mxGeometry x="740" y="80" width="180" height="60" as="geometry" />
+          </mxCell>
+        </object>
+
+        <!-- Task: Deep Research Role & Capabilities -->
+        <object label="Deep Research&#xa;Role &amp; Capabilities" agent="agent_generator_orchestrator" phase="2" phase_name="Research &amp; Analysis" mandatory="true" status_from="researched" status_to="deep_researched" rule="Use /deep-research to thoroughly investigate the role domain, required competencies, industry best practices, tool ecosystems, and optimal persona characteristics. Feed results to Prompt Architect for informed persona design." id="task_deep_research">
+          <mxCell style="shape=mxgraph.bpmn.task;taskMarker=subprocess;isLooping=0;isAdHoc=0;isCompensation=0;isCollapsed=1;instantiate=0;bpmnShapeType=task;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=11;whiteSpace=wrap;" vertex="1" parent="lane_orchestrator">
+            <mxGeometry x="1000" y="80" width="200" height="60" as="geometry" />
+          </mxCell>
+        </object>
+
+        <!-- Link Event: Deep Research -->
+        <mxCell id="evt_link_deep_research" value="" style="shape=mxgraph.bpmn.event;perimeter=ellipsePerimeter;symbol=link;isLooping=0;isInterrupting=0;isConditional=0;outline=throwing;fillColor=#f5f5f5;strokeColor=#666666;strokeWidth=2;" vertex="1" parent="lane_orchestrator">
+          <mxGeometry x="1082" y="150" width="36" height="36" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_link_deep_research" value="&#x2192; deep-research&#xa;-workflow.drawio" style="text;html=0;align=center;verticalAlign=top;whiteSpace=wrap;fontSize=9;fontColor=#666666;" vertex="1" parent="lane_orchestrator">
+          <mxGeometry x="1040" y="190" width="120" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Annotation: Agent path -->
+        <mxCell id="note_agent_path" value="Agent path:&#xa;check ~/.claude/agents/" style="shape=note2;size=15;fillColor=#ffffcc;strokeColor=#d6b656;fontSize=10;whiteSpace=wrap;" vertex="1" parent="lane_orchestrator">
+          <mxGeometry x="340" y="200" width="140" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Annotation: Skill path -->
+        <mxCell id="note_skill_path" value="Command path:&#xa;check ~/.claude/commands/" style="shape=note2;size=15;fillColor=#ffffcc;strokeColor=#d6b656;fontSize=10;whiteSpace=wrap;" vertex="1" parent="lane_orchestrator">
+          <mxGeometry x="340" y="280" width="140" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- PHASE 5 LABEL -->
+        <mxCell id="phase5_label" value="PHASE 5: Quality Check &amp; Output" style="text;html=0;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=12;fontStyle=5;fontColor=#6c8ebf;" vertex="1" parent="lane_orchestrator">
+          <mxGeometry x="2900" y="40" width="280" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Task: Validate File Structure -->
+        <object label="Validate File&#xa;Structure" agent="agent_generator_orchestrator" phase="5" phase_name="Quality Check &amp; Output" mandatory="true" status_from="assembled" status_to="validating" rule="Check frontmatter fields present, markdown valid, no broken references" id="task_validate_structure">
+          <mxCell style="shape=mxgraph.bpmn.task;taskMarker=service;isLooping=0;isAdHoc=0;isCompensation=0;isCollapsed=0;instantiate=0;bpmnShapeType=task;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=11;whiteSpace=wrap;" vertex="1" parent="lane_orchestrator">
+            <mxGeometry x="2900" y="80" width="180" height="60" as="geometry" />
+          </mxCell>
+        </object>
+
+        <!-- Task: Verify No Duplicates -->
+        <object label="Verify No&#xa;Duplicates" agent="agent_generator_orchestrator" phase="5" phase_name="Quality Check &amp; Output" mandatory="true" status_from="validating" status_to="verified" rule="Confirm no existing agent/skill with same name or overlapping description" id="task_verify_duplicates">
+          <mxCell style="shape=mxgraph.bpmn.task;taskMarker=service;isLooping=0;isAdHoc=0;isCompensation=0;isCollapsed=0;instantiate=0;bpmnShapeType=task;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=11;whiteSpace=wrap;" vertex="1" parent="lane_orchestrator">
+            <mxGeometry x="3140" y="80" width="180" height="60" as="geometry" />
+          </mxCell>
+        </object>
+
+        <!-- Gateway: Quality OK? -->
+        <mxCell id="gw_quality_ok" value="Quality&#xa;OK?" style="shape=mxgraph.bpmn.shape;perimeter=mxPerimeter.rhombusPerimeter;symbol=exclusiveGw;gwType=exclusive;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=10;" vertex="1" parent="lane_orchestrator">
+          <mxGeometry x="3380" y="85" width="50" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Task: Write Output File -->
+        <object label="Write Output&#xa;File" agent="agent_generator_orchestrator" phase="5" phase_name="Quality Check &amp; Output" mandatory="true" status_from="verified" status_to="written" rule="Write to ~/.claude/agents/ for agents or ~/.claude/commands/ for skills" id="task_write_output">
+          <mxCell style="shape=mxgraph.bpmn.task;taskMarker=send;isLooping=0;isAdHoc=0;isCompensation=0;isCollapsed=0;instantiate=0;bpmnShapeType=task;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=11;whiteSpace=wrap;" vertex="1" parent="lane_orchestrator">
+            <mxGeometry x="3540" y="80" width="180" height="60" as="geometry" />
+          </mxCell>
+        </object>
+
+        <!-- Task: Register Agent/Skill -->
+        <object label="Register&#xa;Agent/Skill" agent="agent_generator_orchestrator" phase="5" phase_name="Quality Check &amp; Output" mandatory="false" status_from="written" status_to="registered" rule="If applicable, run claude mcp add or register the new agent/skill" id="task_register">
+          <mxCell style="shape=mxgraph.bpmn.task;taskMarker=script;isLooping=0;isAdHoc=0;isCompensation=0;isCollapsed=0;instantiate=0;bpmnShapeType=task;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=11;whiteSpace=wrap;" vertex="1" parent="lane_orchestrator">
+            <mxGeometry x="3780" y="80" width="180" height="60" as="geometry" />
+          </mxCell>
+        </object>
+
+        <!-- END EVENT -->
+        <mxCell id="evt_end" value="" style="shape=mxgraph.bpmn.event;perimeter=ellipsePerimeter;symbol=terminate;isLooping=0;isInterrupting=0;isConditional=0;outline=end;fillColor=#f8cecc;strokeColor=#b85450;strokeWidth=3;" vertex="1" parent="lane_orchestrator">
+          <mxGeometry x="4040" y="90" width="40" height="40" as="geometry" />
+        </mxCell>
+        <mxCell id="lbl_end" value="Generation&#xa;Complete" style="text;html=0;align=center;verticalAlign=top;whiteSpace=wrap;fontSize=10;" vertex="1" parent="lane_orchestrator">
+          <mxGeometry x="4020" y="135" width="80" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Orchestrator Phase 2 Flows -->
+        <mxCell id="flow_analyze_research" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" source="task_analyze_existing" target="task_research_domain" parent="lane_orchestrator">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Orchestrator Phase 5 Flows -->
+        <mxCell id="flow_validate_verify" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" source="task_validate_structure" target="task_verify_duplicates" parent="lane_orchestrator">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="flow_verify_gw_quality" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" source="task_verify_duplicates" target="gw_quality_ok" parent="lane_orchestrator">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="flow_quality_yes" value="Yes" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;fontStyle=1;fontSize=10;labelBackgroundColor=#d5e8d4;" edge="1" source="gw_quality_ok" target="task_write_output" parent="lane_orchestrator">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="flow_write_register" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" source="task_write_output" target="task_register" parent="lane_orchestrator">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="flow_register_end" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" source="task_register" target="evt_end" parent="lane_orchestrator">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================ -->
+        <!-- LANE 3: Prompt Architect                                     -->
+        <!-- ============================================================ -->
+        <mxCell id="lane_prompt_architect" value="Prompt Architect" style="shape=mxgraph.bpmn.lane;startSize=40;fillColor=#d5e8d4;strokeColor=#82b366;horizontal=1;swimlaneHead=0;fontStyle=1;fontSize=11;" vertex="1" parent="pool1">
+          <mxGeometry y="1030" width="5400" height="1000" as="geometry" />
+        </mxCell>
+
+        <!-- PHASE 3 LABEL -->
+        <mxCell id="phase3_label" value="PHASE 3: Prompt Construction" style="text;html=0;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=12;fontStyle=5;fontColor=#82b366;" vertex="1" parent="lane_prompt_architect">
+          <mxGeometry x="1000" y="40" width="260" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Task: Design Role Persona -->
+        <object label="Design Role&#xa;Persona" agent="agent_generator_prompt_architect" phase="3" phase_name="Prompt Construction" mandatory="true" status_from="deep_researched" status_to="persona_designed" rule="Create character name, background, experience narrative based on deep research findings - the embodiment section" id="task_design_persona">
+          <mxCell style="shape=mxgraph.bpmn.task;taskMarker=user;isLooping=0;isAdHoc=0;isCompensation=0;isCollapsed=0;instantiate=0;bpmnShapeType=task;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=11;whiteSpace=wrap;" vertex="1" parent="lane_prompt_architect">
+            <mxGeometry x="1000" y="80" width="180" height="60" as="geometry" />
+          </mxCell>
+        </object>
+
+        <!-- Task: Define Expertise Sections -->
+        <object label="Define Expertise&#xa;Sections" agent="agent_generator_prompt_architect" phase="3" phase_name="Prompt Construction" mandatory="true" status_from="persona_designed" status_to="expertise_defined" rule="Technical skills, available tools, MCP server integrations" id="task_define_expertise">
+          <mxCell style="shape=mxgraph.bpmn.task;taskMarker=user;isLooping=0;isAdHoc=0;isCompensation=0;isCollapsed=0;instantiate=0;bpmnShapeType=task;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=11;whiteSpace=wrap;" vertex="1" parent="lane_prompt_architect">
+            <mxGeometry x="1240" y="80" width="180" height="60" as="geometry" />
+          </mxCell>
+        </object>
+
+        <!-- Task: Write Workflow Instructions -->
+        <object label="Write Workflow&#xa;Instructions" agent="agent_generator_prompt_architect" phase="3" phase_name="Prompt Construction" mandatory="true" status_from="expertise_defined" status_to="workflow_written" rule="Primary workflow, decision-making rules, output format guidelines" id="task_write_workflow">
+          <mxCell style="shape=mxgraph.bpmn.task;taskMarker=user;isLooping=0;isAdHoc=0;isCompensation=0;isCollapsed=0;instantiate=0;bpmnShapeType=task;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=11;whiteSpace=wrap;" vertex="1" parent="lane_prompt_architect">
+            <mxGeometry x="1480" y="80" width="180" height="60" as="geometry" />
+          </mxCell>
+        </object>
+
+        <!-- Task: Compose Description Field -->
+        <object label="Compose Description&#xa;Field" agent="agent_generator_prompt_architect" phase="3" phase_name="Prompt Construction" mandatory="true" status_from="workflow_written" status_to="description_composed" rule="Write the 1-2 sentence description for frontmatter - must be concise but informative" id="task_compose_description">
+          <mxCell style="shape=mxgraph.bpmn.task;taskMarker=user;isLooping=0;isAdHoc=0;isCompensation=0;isCollapsed=0;instantiate=0;bpmnShapeType=task;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=11;whiteSpace=wrap;" vertex="1" parent="lane_prompt_architect">
+            <mxGeometry x="1720" y="80" width="180" height="60" as="geometry" />
+          </mxCell>
+        </object>
+
+        <!-- Phase 3 Flows -->
+        <mxCell id="flow_persona_expertise" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" source="task_design_persona" target="task_define_expertise" parent="lane_prompt_architect">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="flow_expertise_workflow" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" source="task_define_expertise" target="task_write_workflow" parent="lane_prompt_architect">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="flow_workflow_description" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" source="task_write_workflow" target="task_compose_description" parent="lane_prompt_architect">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================ -->
+        <!-- PHASE 3C: Command Construction (Prompt Architect lane)       -->
+        <!-- ============================================================ -->
+
+        <!-- PHASE 3C LABEL -->
+        <mxCell id="phase3c_label" value="PHASE 3C: Command Construction" style="text;html=0;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=12;fontStyle=5;fontColor=#d79b00;" vertex="1" parent="lane_prompt_architect">
+          <mxGeometry x="1000" y="260" width="280" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Task: Design Command Orchestrator Role -->
+        <object label="Design Command&#xa;Orchestrator Role" agent="agent_generator_prompt_architect" phase="3C" phase_name="Command Construction" mandatory="true" status_from="deep_researched" status_to="command_role_designed" rule="Define the orchestrator role and purpose. Commands use direct instruction style (no persona/embodiment). Start with 'You are now the **Orchestrator** for the X Workflow.' pattern." id="task_design_command_role">
+          <mxCell style="shape=mxgraph.bpmn.task;taskMarker=user;isLooping=0;isAdHoc=0;isCompensation=0;isCollapsed=0;instantiate=0;bpmnShapeType=task;fillColor=#ffe6cc;strokeColor=#d79b00;fontStyle=1;fontSize=11;whiteSpace=wrap;" vertex="1" parent="lane_prompt_architect">
+            <mxGeometry x="1000" y="300" width="180" height="60" as="geometry" />
+          </mxCell>
+        </object>
+
+        <!-- Task: Define Command Rules & Constraints -->
+        <object label="Define Command&#xa;Rules &amp; Constraints" agent="agent_generator_prompt_architect" phase="3C" phase_name="Command Construction" mandatory="true" status_from="command_role_designed" status_to="command_rules_defined" rule="Write mandatory rules, startup sequence, tool usage patterns, and $ARGUMENTS handling. Commands reference BPMN diagrams, MCP tools, and agent delegation patterns." id="task_define_command_rules">
+          <mxCell style="shape=mxgraph.bpmn.task;taskMarker=user;isLooping=0;isAdHoc=0;isCompensation=0;isCollapsed=0;instantiate=0;bpmnShapeType=task;fillColor=#ffe6cc;strokeColor=#d79b00;fontStyle=1;fontSize=11;whiteSpace=wrap;" vertex="1" parent="lane_prompt_architect">
+            <mxGeometry x="1240" y="300" width="180" height="60" as="geometry" />
+          </mxCell>
+        </object>
+
+        <!-- Task: Write Command Navigation Logic -->
+        <object label="Write Command&#xa;Navigation Logic" agent="agent_generator_prompt_architect" phase="3C" phase_name="Command Construction" mandatory="true" status_from="command_rules_defined" status_to="command_navigation_written" rule="Define phase-by-phase execution, gateway handling, correction loops, and inter-agent communication patterns. Include how to handle $ARGUMENTS from the user's slash command invocation." id="task_write_command_navigation">
+          <mxCell style="shape=mxgraph.bpmn.task;taskMarker=user;isLooping=0;isAdHoc=0;isCompensation=0;isCollapsed=0;instantiate=0;bpmnShapeType=task;fillColor=#ffe6cc;strokeColor=#d79b00;fontStyle=1;fontSize=11;whiteSpace=wrap;" vertex="1" parent="lane_prompt_architect">
+            <mxGeometry x="1480" y="300" width="180" height="60" as="geometry" />
+          </mxCell>
+        </object>
+
+        <!-- Task: Compose Command Skill Entry -->
+        <object label="Compose Command&#xa;Skill Entry" agent="agent_generator_prompt_architect" phase="3C" phase_name="Command Construction" mandatory="true" status_from="command_navigation_written" status_to="description_composed" rule="Write the skill entry for the commands system prompt. This includes the trigger description that tells Claude when to invoke this command. Note: commands have NO frontmatter - they start directly with content." id="task_compose_command_entry">
+          <mxCell style="shape=mxgraph.bpmn.task;taskMarker=user;isLooping=0;isAdHoc=0;isCompensation=0;isCollapsed=0;instantiate=0;bpmnShapeType=task;fillColor=#ffe6cc;strokeColor=#d79b00;fontStyle=1;fontSize=11;whiteSpace=wrap;" vertex="1" parent="lane_prompt_architect">
+            <mxGeometry x="1720" y="300" width="180" height="60" as="geometry" />
+          </mxCell>
+        </object>
+
+        <!-- Phase 3C Flows -->
+        <mxCell id="flow_cmd_role_rules" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" source="task_design_command_role" target="task_define_command_rules" parent="lane_prompt_architect">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="flow_cmd_rules_nav" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" source="task_define_command_rules" target="task_write_command_navigation" parent="lane_prompt_architect">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="flow_cmd_nav_entry" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" source="task_write_command_navigation" target="task_compose_command_entry" parent="lane_prompt_architect">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Annotation: Command tasks info -->
+        <mxCell id="note_command_info" value="Commands have NO frontmatter.&#xa;Start with orchestrator prompt.&#xa;Use $ARGUMENTS for user input." style="shape=note2;size=15;fillColor=#ffffcc;strokeColor=#d6b656;fontSize=10;whiteSpace=wrap;" vertex="1" parent="lane_prompt_architect">
+          <mxGeometry x="1000" y="400" width="200" height="60" as="geometry" />
+        </mxCell>
+
+        <!-- ============================================================ -->
+        <!-- LANE 4: Token Validator                                      -->
+        <!-- ============================================================ -->
+        <mxCell id="lane_token_validator" value="Token Validator" style="shape=mxgraph.bpmn.lane;startSize=40;fillColor=#fff2cc;strokeColor=#d6b656;horizontal=1;swimlaneHead=0;fontStyle=1;fontSize=11;" vertex="1" parent="pool1">
+          <mxGeometry y="2030" width="5400" height="640" as="geometry" />
+        </mxCell>
+
+        <!-- PHASE 4 LABEL -->
+        <mxCell id="phase4_label" value="PHASE 4: Token Validation &amp; Assembly" style="text;html=0;align=left;verticalAlign=middle;whiteSpace=wrap;fontSize=12;fontStyle=5;fontColor=#d6b656;" vertex="1" parent="lane_token_validator">
+          <mxGeometry x="2000" y="40" width="300" height="30" as="geometry" />
+        </mxCell>
+
+        <!-- Task: Count Tokens -->
+        <object label="Count Tokens" agent="agent_generator_token_validator" phase="4" phase_name="Token Validation &amp; Assembly" mandatory="true" status_from="description_composed" status_to="tokens_counted" rule="Measure total token count of the generated content using tokenizer" id="task_count_tokens">
+          <mxCell style="shape=mxgraph.bpmn.task;taskMarker=service;isLooping=0;isAdHoc=0;isCompensation=0;isCollapsed=0;instantiate=0;bpmnShapeType=task;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=11;whiteSpace=wrap;" vertex="1" parent="lane_token_validator">
+            <mxGeometry x="2000" y="80" width="180" height="60" as="geometry" />
+          </mxCell>
+        </object>
+
+        <!-- Gateway: Under 15k tokens? -->
+        <mxCell id="gw_token_limit" value="Under 15k&#xa;Tokens?" style="shape=mxgraph.bpmn.shape;perimeter=mxPerimeter.rhombusPerimeter;symbol=exclusiveGw;gwType=exclusive;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=10;" vertex="1" parent="lane_token_validator">
+          <mxGeometry x="2260" y="85" width="50" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Task: Trim & Optimize -->
+        <object label="Trim &amp;&#xa;Optimize" agent="agent_generator_token_validator" phase="4" phase_name="Token Validation &amp; Assembly" mandatory="true" status_from="tokens_exceeded" status_to="optimized" rule="Reduce verbosity, remove redundancy, compress examples while preserving quality" id="task_trim_optimize">
+          <mxCell style="shape=mxgraph.bpmn.task;taskMarker=script;isLooping=0;isAdHoc=0;isCompensation=0;isCollapsed=0;instantiate=0;bpmnShapeType=task;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=11;whiteSpace=wrap;" vertex="1" parent="lane_token_validator">
+            <mxGeometry x="2160" y="250" width="180" height="60" as="geometry" />
+          </mxCell>
+        </object>
+
+        <!-- Task: Assemble Final File -->
+        <object label="Assemble Final&#xa;File" agent="agent_generator_token_validator" phase="4" phase_name="Token Validation &amp; Assembly" mandatory="true" status_from="tokens_counted" status_to="assembled" rule="Combine frontmatter (name, description, model) + markdown body into final .md file" id="task_assemble_file">
+          <mxCell style="shape=mxgraph.bpmn.task;taskMarker=abstract;isLooping=0;isAdHoc=0;isCompensation=0;isCollapsed=0;instantiate=0;bpmnShapeType=task;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=11;whiteSpace=wrap;" vertex="1" parent="lane_token_validator">
+            <mxGeometry x="2480" y="80" width="180" height="60" as="geometry" />
+          </mxCell>
+        </object>
+
+        <!-- Annotation: Token limit -->
+        <mxCell id="note_token_limit" value="description field must&#xa;stay under 15,000 tokens" style="shape=note2;size=15;fillColor=#ffffcc;strokeColor=#d6b656;fontSize=10;whiteSpace=wrap;" vertex="1" parent="lane_token_validator">
+          <mxGeometry x="2350" y="200" width="160" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Phase 4 Flows -->
+        <mxCell id="flow_count_gw_token" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" source="task_count_tokens" target="gw_token_limit" parent="lane_token_validator">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="flow_token_yes" value="Yes" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;fontStyle=1;fontSize=10;labelBackgroundColor=#d5e8d4;" edge="1" source="gw_token_limit" target="task_assemble_file" parent="lane_token_validator">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <mxCell id="flow_token_no" value="No" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=1;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;fontStyle=1;fontSize=10;labelBackgroundColor=#f8cecc;" edge="1" source="gw_token_limit" target="task_trim_optimize" parent="lane_token_validator">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Loopback: Trim -> Count Tokens -->
+        <mxCell id="flow_trim_recount" value="Re-count" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;exitX=0;exitY=0.5;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;strokeWidth=2;fontStyle=1;fontSize=10;labelBackgroundColor=#fff2cc;dashed=1;dashPattern=8 4;" edge="1" source="task_trim_optimize" target="task_count_tokens" parent="lane_token_validator">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2090" y="280" />
+              <mxPoint x="2090" y="180" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- ============================================================ -->
+        <!-- CROSS-LANE FLOWS                                             -->
+        <!-- ============================================================ -->
+
+        <!-- Flow: Receive Request (User) -> Gateway Agent/Skill (Orchestrator) -->
+        <mxCell id="flow_receive_to_gw" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" source="task_receive_request" target="gw_agent_or_skill" parent="pool1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Flow: Gateway Agent -> Analyze Existing (Agent path) -->
+        <mxCell id="flow_gw_agent" value="Agent" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;fontStyle=1;fontSize=10;labelBackgroundColor=#e1d5e7;" edge="1" source="gw_agent_or_skill" target="task_analyze_existing" parent="pool1">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Flow: Gateway Skill -> Analyze Existing (Skill path) -->
+        <mxCell id="flow_gw_skill" value="Command" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=1;entryDx=0;entryDy=0;strokeWidth=2;fontStyle=1;fontSize=10;labelBackgroundColor=#dae8fc;" edge="1" source="gw_agent_or_skill" target="task_analyze_existing" parent="pool1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="685" y="610" />
+              <mxPoint x="685" y="570" />
+              <mxPoint x="930" y="570" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Flow: Research Domain (Orchestrator) -> Deep Research (Orchestrator) -->
+        <mxCell id="flow_research_to_deep_research" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" source="task_research_domain" target="task_deep_research" parent="lane_orchestrator">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Flow: Deep Research (Orchestrator) -> Routing Gateway (Orchestrator) -->
+        <mxCell id="flow_deep_research_to_route_gw" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" source="task_deep_research" target="gw_agent_or_command_route" parent="lane_orchestrator">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+
+        <!-- Gateway: Agent or Command Route (after Deep Research) -->
+        <mxCell id="gw_agent_or_command_route" value="Agent or&#xa;Command?" style="shape=mxgraph.bpmn.shape;perimeter=mxPerimeter.rhombusPerimeter;symbol=exclusiveGw;gwType=exclusive;fillColor=#fff2cc;strokeColor=#d6b656;fontStyle=1;fontSize=10;" vertex="1" parent="lane_orchestrator">
+          <mxGeometry x="1300" y="85" width="50" height="50" as="geometry" />
+        </mxCell>
+
+        <!-- Flow: Route Gateway -> Design Persona (Agent path, cross-lane) -->
+        <mxCell id="flow_route_to_persona" value="Agent" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;fontStyle=1;fontSize=10;labelBackgroundColor=#d5e8d4;" edge="1" source="gw_agent_or_command_route" target="task_design_persona" parent="pool1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1755" y="680" />
+              <mxPoint x="1755" y="900" />
+              <mxPoint x="980" y="900" />
+              <mxPoint x="980" y="1140" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Flow: Route Gateway -> Design Command Role (Command path, cross-lane) -->
+        <mxCell id="flow_route_to_command" value="Command" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;fontStyle=1;fontSize=10;labelBackgroundColor=#ffe6cc;" edge="1" source="gw_agent_or_command_route" target="task_design_command_role" parent="pool1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1755" y="680" />
+              <mxPoint x="1755" y="960" />
+              <mxPoint x="980" y="960" />
+              <mxPoint x="980" y="1360" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Flow: Compose Description (Prompt Architect) -> Count Tokens (Token Validator) -->
+        <mxCell id="flow_description_to_tokens" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" source="task_compose_description" target="task_count_tokens" parent="pool1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2240" y="1700" />
+              <mxPoint x="1960" y="1700" />
+              <mxPoint x="1960" y="2140" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Flow: Compose Command Entry (Prompt Architect) -> Count Tokens (Token Validator) -->
+        <mxCell id="flow_command_entry_to_tokens" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0;entryY=1;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" source="task_compose_command_entry" target="task_count_tokens" parent="pool1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="2240" y="1800" />
+              <mxPoint x="1900" y="1800" />
+              <mxPoint x="1900" y="2200" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Flow: Assemble File (Token Validator) -> Validate Structure (Orchestrator) -->
+        <mxCell id="flow_assemble_to_validate" value="" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;exitX=0.5;exitY=0;exitDx=0;exitDy=0;entryX=0.5;entryY=1;entryDx=0;entryDy=0;strokeWidth=2;" edge="1" source="task_assemble_file" target="task_validate_structure" parent="pool1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="3000" y="1960" />
+              <mxPoint x="3420" y="1960" />
+              <mxPoint x="3420" y="600" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+        <!-- Flow: Quality No (Rework) -> Design Persona (loop back to Phase 3) -->
+        <!-- Note: Orchestrator determines whether to rework Agent or Command path based on context -->
+        <mxCell id="flow_quality_rework" value="No (Rework)" style="edgeStyle=orthogonalEdgeStyle;rounded=1;orthogonalLoop=1;jettySize=auto;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;strokeWidth=2;fontStyle=1;fontSize=10;labelBackgroundColor=#f8cecc;dashed=1;dashPattern=8 4;" edge="1" source="gw_quality_ok" target="task_design_persona" parent="pool1">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="3835" y="680" />
+              <mxPoint x="3835" y="980" />
+              <mxPoint x="1520" y="980" />
+              <mxPoint x="1520" y="1060" />
+            </Array>
+          </mxGeometry>
+        </mxCell>
+
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
